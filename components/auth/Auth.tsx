@@ -13,8 +13,23 @@ export function Auth() {
   const [message, setMessage] = useState<string | null>(null);
 
   const handleAuth = async (mode: "login" | "signup") => {
-    if (!email.trim() || !password.trim()) {
-      setError("Please enter both email and password.");
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedEmail && !trimmedPassword) {
+      setError("Please enter your email and password.");
+      setMessage(null);
+      return;
+    }
+
+    if (!trimmedEmail) {
+      setError("Please enter your email.");
+      setMessage(null);
+      return;
+    }
+
+    if (!trimmedPassword) {
+      setError("Please enter your password.");
       setMessage(null);
       return;
     }
@@ -25,8 +40,11 @@ export function Auth() {
 
     const { error: authError } =
       mode === "signup"
-        ? await supabase.auth.signUp({ email, password })
-        : await supabase.auth.signInWithPassword({ email, password });
+        ? await supabase.auth.signUp({ email: trimmedEmail, password: trimmedPassword })
+        : await supabase.auth.signInWithPassword({
+            email: trimmedEmail,
+            password: trimmedPassword,
+          });
 
     if (authError) {
       setError(authError.message);
