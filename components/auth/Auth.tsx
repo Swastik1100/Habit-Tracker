@@ -17,10 +17,10 @@ export function Auth() {
     setError(null);
     setMessage(null);
 
-    const fn =
-      mode === "signup" ? supabase.auth.signUp : supabase.auth.signInWithPassword;
-
-    const { error: authError } = await fn({ email, password });
+    const { error: authError } =
+      mode === "signup"
+        ? await supabase.auth.signUp({ email, password })
+        : await supabase.auth.signInWithPassword({ email, password });
 
     if (authError) {
       setError(authError.message);
