@@ -43,7 +43,7 @@ export function Auth() {
     if (authError) {
       setError(authError.message);
     } else if (mode === "login") {
-      setMessage("Signed in successfully. Redirecting...");
+      setMessage("Logged in successfully. Redirecting...");
     } else if (mode === "signup") {
       setMessage("Account created. Check your email for confirmation if required.");
     }
