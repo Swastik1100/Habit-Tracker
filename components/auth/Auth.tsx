@@ -8,12 +8,18 @@ export function Auth() {
   const supabase = useSupabase();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [pendingMode, setPendingMode] = useState<"login" | "signup" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   const handleAuth = async (mode: "login" | "signup") => {
-    setLoading(true);
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter both email and password.");
+      setMessage(null);
+      return;
+    }
+
+    setPendingMode(mode);
     setError(null);
     setMessage(null);
 
@@ -24,11 +30,13 @@ export function Auth() {
 
     if (authError) {
       setError(authError.message);
+    } else if (mode === "login") {
+      setMessage("Signed in successfully. Redirecting...");
     } else if (mode === "signup") {
       setMessage("Account created. Check your email for confirmation if required.");
     }
 
-    setLoading(false);
+    setPendingMode(null);
   };
 
   return (
@@ -61,20 +69,20 @@ export function Auth() {
           <button
             type="button"
             onClick={() => handleAuth("login")}
-            disabled={loading}
+            disabled={Boolean(pendingMode)}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <LogIn size={16} />
-            Login
+            {pendingMode === "login" ? "Logging in..." : "Login"}
           </button>
           <button
             type="button"
             onClick={() => handleAuth("signup")}
-            disabled={loading}
+            disabled={Boolean(pendingMode)}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             <UserPlus size={16} />
-            Sign Up
+            {pendingMode === "signup" ? "Signing up..." : "Sign Up"}
           </button>
         </div>
       </div>
