@@ -16,12 +16,6 @@ export function Auth() {
     const trimmedEmail = email.trim();
     const trimmedPassword = password.trim();
 
-    if (!trimmedEmail && !trimmedPassword) {
-      setError("Please enter your email and password.");
-      setMessage(null);
-      return;
-    }
-
     if (!trimmedEmail) {
       setError("Please enter your email.");
       setMessage(null);
